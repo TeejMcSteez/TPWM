@@ -16,4 +16,11 @@ contextBridge.exposeInMainWorld('api', {
             callback(userList); // Pass thee received data to the renderer
         });
     },
+    home: () => ipcRenderer.send('home'),
+    generatePassword: () => ipcRenderer.send('generatePassword'),
+    sendPassword: (callback) => {
+        ipcRenderer.on('sendPassword', (event, password) => {
+            callback(password);
+        });
+    },
 });

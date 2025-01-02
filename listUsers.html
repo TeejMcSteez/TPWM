@@ -11,7 +11,9 @@
     <div id="UserList">
 
     </div>
-
+    <form id="back">
+        <button type="click">Back</button>
+    </form>
     <script>
         // creates UL and list items with the return content from the data
         const list = document.getElementById('UserList'); // Target the parent container
@@ -45,7 +47,10 @@
             });
         });
 
-
+        document.getElementById('back').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.api.home();
+        });
         
     </script>
 </body>

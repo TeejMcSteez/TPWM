@@ -1,11 +1,9 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const FS = require('fs');
 const enc = require('crypto');
-const { start } = require('node:repl');
+const pass = require('generate-password');
 
 let mainWindow;
-let userWindow;
-let listWindow;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -19,9 +17,6 @@ app.on('ready', () => {
 
     mainWindow.loadFile('index.html');
 
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
 });
 
 // Handle input from the renderer
@@ -47,7 +42,11 @@ const filePath = __dirname + "/users.json";
 ipcMain.handle('add-new-info', (event, userInfo) => {
     try {
         let data = [];
-        const exists = FS.existsSync;
+        const exists = FS.existsSync(filePath);
+        if (!exists) {
+            FS.appendFileSync(filePath, '');
+        }
+
         const empty = FS.readFileSync(filePath, 'utf-8').trim() !== ''; 
         if (exists && empty) {
             const fileContent = FS.readFileSync(filePath, 'utf-8');
@@ -69,10 +68,9 @@ ipcMain.handle('add-new-info', (event, userInfo) => {
 });
 
 ipcMain.on('list-users', (event) => {
-    userWindow.close();
-    userWindow = null;
-
-    listWindow = new BrowserWindow({
+    mainWindow.close();
+    
+    mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -80,22 +78,21 @@ ipcMain.on('list-users', (event) => {
             preload: __dirname + '/preload.js', // Load preload script
         },
     });
-
-    listWindow.loadFile('listUsers.html');
+    
+    mainWindow.loadFile('listUsers.html');
 
     const userFileContent = FS.readFileSync(filePath);
     const data = JSON.parse(userFileContent);
 
     console.log(data);
 
-    listWindow.webContents.send('send-list', data);
+    mainWindow.webContents.send('send-list', data);
 });
 
-function onceVerified() {
+ipcMain.on('home', (event) => {
     mainWindow.close();
-    mainWindow = null;
 
-    userWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -104,11 +101,28 @@ function onceVerified() {
         },
     });
 
-    userWindow.loadFile('home.html');
+    mainWindow.loadFile('home.html');
+});
 
-    userWindow.on('closed', () => {
-        userWindow = null;
+ipcMain.on('generatePassword', (event) => {
+    // generating secure password here
+    const password = pass.generate({length: 10, numbers: true, uppercase: true, symbols: true, strict: true});
+    console.log(`Derived key ${password}`);
+
+    mainWindow.webContents.send('sendPassword', password);
+});
+
+function onceVerified() {
+    mainWindow.close();
+
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            contextIsolation: true, // Enforce isolation
+            preload: __dirname + '/preload.js', // Load preload script
+        },
     });
 
+    mainWindow.loadFile('home.html');
 }
-
