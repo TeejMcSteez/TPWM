@@ -7,6 +7,7 @@ require('dotenv').config();
 
 let mainWindow;
 const key = process.env.keyPass;
+const rootPath = process.env.rootPath;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -26,7 +27,7 @@ app.on('ready', () => {
 ipcMain.on('input-data', (event, input) => {
     // Add data encryption within transmission
     try {
-        const root = FS.readFileSync(__dirname + '/root.json');
+        const root = FS.readFileSync(__dirname + rootPath);
         const rootJson = JSON.parse(root);
 
         if (input[0] === rootJson.uN && input[1] === rootJson.pwd) {
