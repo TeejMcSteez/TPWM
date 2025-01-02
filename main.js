@@ -2,9 +2,11 @@ const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const FS = require('fs');
 const enc = require('crypto');
 const pass = require('generate-password');
+const encryptor = require('crypto-js')
 require('dotenv').config();
 
 let mainWindow;
+const key = process.env.keyPass;
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
@@ -53,11 +55,13 @@ ipcMain.handle('add-new-info', (event, userInfo) => {
             const fileContent = FS.readFileSync(filePath, 'utf-8');
             data = JSON.parse(fileContent);
         } 
-
-        data.push({
-            Username: userInfo[1],
-            Password:userInfo[1],
-            Website: userInfo[2],
+        const encryptedUsername = encryptor.AES.encrypt(userInfo[0], key).toString();
+        const encryptedPassword = encryptor.AES.encrypt(userInfo[1], key).toString();
+        const encryptedWebsite = encryptor.AES.encrypt(userInfo[2], key).toString();
+        data.push({ // User info indexes are
+            Username: encryptedUsername,
+            Password: encryptedPassword,
+            Website: encryptedWebsite,
         });
 
         FS.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
@@ -86,8 +90,15 @@ ipcMain.on('list-users', (event) => {
     const userFileContent = FS.readFileSync(filePath);
     const data = JSON.parse(userFileContent);
 
+    data.forEach(user => {
+        const decryptedUsername = encryptor.AES.decrypt(user.Username, key).toString(encryptor.enc.Utf8);
+        const decryptedPassword = encryptor.AES.decrypt(user.Password, key).toString(encryptor.enc.Utf8);
+        const decryptedWebsite = encryptor.AES.decrypt(user.Website, key).toString(encryptor.enc.Utf8);
 
-    console.log(data);
+        user.Username = decryptedUsername
+        user.Password = decryptedPassword;
+        user.Website = decryptedWebsite;
+    });
 
     mainWindow.webContents.send('send-list', data);
 });
@@ -127,16 +138,4 @@ function onceVerified() {
     });
 
     mainWindow.loadFile('home.html');
-}
-const key = Buffer.from(process.env.keyPass, 'utf-8');
-const iv = Buffer.from(process.env.ivPass, 'utf-8');
-
-function encryptData(data) {
-    const cipher = enc.createCipheriv('aes-256-cbc', key, iv);
-    let encrypted = cipher.update(data, 'utf-8', 'hex');
-    encrypted += cipher.final("hex");
-    return encrypted;
-}
-function decryptData(data) {
-    
 }
