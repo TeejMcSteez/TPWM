@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <form id="AddInfo">
+        <input type="text" id="Username" placeholder="Username . . ."/>
+        <input type="text" id="Password" placeholder="Password . . ."/>
+        <input type="text" id="website" placeholder="Website . . ."/>
+        <button id="submit" type="submit">Submit</button>
+    </form>
+    <div id="infoList">
+        <button id="list" type="click">List Users</button>
+    </div>
+    <script>
+        document.getElementById('AddInfo').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('Username').value;
+            const Password = document.getElementById('Password').value;
+            const website = document.getElementById('website').value;
+
+            console.log(username, Password, website);
+
+            if (username && Password && website) {
+                const userInfo = [username, Password, website];
+                console.log(userInfo[0]);
+                
+                window.api.addNewInfo(userInfo);
+            } else {
+                window.alert("Error all fields not entered");
+            }
+        });
+
+        document.getElementById('list').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.alert('Listing Users');
+            window.api.listUsers();
+        });
+    </script>
+</body>
+</html>
