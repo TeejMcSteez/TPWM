@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const FS = require('fs');
 const enc = require('crypto');
 const pass = require('generate-password');
+require('dotenv').config();
 
 let mainWindow;
 
@@ -54,10 +55,11 @@ ipcMain.handle('add-new-info', (event, userInfo) => {
         } 
 
         data.push({
-            Username: userInfo[0],
-            Password: userInfo[1],
+            Username: userInfo[1],
+            Password:userInfo[1],
             Website: userInfo[2],
         });
+
         FS.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
         return {status: 'success'};
 
@@ -84,6 +86,7 @@ ipcMain.on('list-users', (event) => {
     const userFileContent = FS.readFileSync(filePath);
     const data = JSON.parse(userFileContent);
 
+
     console.log(data);
 
     mainWindow.webContents.send('send-list', data);
@@ -106,8 +109,7 @@ ipcMain.on('home', (event) => {
 
 ipcMain.on('generatePassword', (event) => {
     // generating secure password here
-    const password = pass.generate({length: 10, numbers: true, uppercase: true, symbols: true, strict: true});
-    console.log(`Derived key ${password}`);
+    const password = pass.generate({length: 12, numbers: true, uppercase: true, symbols: true, strict: true});
 
     mainWindow.webContents.send('sendPassword', password);
 });
@@ -125,4 +127,16 @@ function onceVerified() {
     });
 
     mainWindow.loadFile('home.html');
+}
+const key = Buffer.from(process.env.keyPass, 'utf-8');
+const iv = Buffer.from(process.env.ivPass, 'utf-8');
+
+function encryptData(data) {
+    const cipher = enc.createCipheriv('aes-256-cbc', key, iv);
+    let encrypted = cipher.update(data, 'utf-8', 'hex');
+    encrypted += cipher.final("hex");
+    return encrypted;
+}
+function decryptData(data) {
+    
 }
