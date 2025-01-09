@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const FS = require('fs');
+const path = require('node:path');
 const enc = require('crypto');
 const pass = require('generate-password');
 const encryptor = require('crypto-js')
@@ -19,7 +20,7 @@ app.on('ready', () => {
         },
     });
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile(path.join(__dirname, '/public/index.html'));
 
 });
 
@@ -102,7 +103,7 @@ ipcMain.on('list-users', (event) => {
         },
     });
     
-    mainWindow.loadFile('listUsers.html');
+    mainWindow.loadFile(path.join(__dirname, '/public/listUsers.html'));
 
     const userFileContent = FS.readFileSync(filePath);
     const data = JSON.parse(userFileContent);
@@ -132,7 +133,7 @@ ipcMain.on('home', (event) => {
         },
     });
 
-    mainWindow.loadFile('home.html');
+    mainWindow.loadFile(path.join(__dirname, '/public/home.html'));
 });
 
 ipcMain.on('generatePassword', (event) => {
@@ -154,5 +155,5 @@ function onceVerified() {
         },
     });
 
-    mainWindow.loadFile('home.html');
+    mainWindow.loadFile(path.join(__dirname, '/public/home.html'));
 }

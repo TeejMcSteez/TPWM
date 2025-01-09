@@ -11,10 +11,11 @@
   "version": "1.0.0",
   "main": "main.js",
   "devDependencies": {
-    "electron": "^33.3.1"
+    "electron": "^33.3.1",
+    "tailwindcss": "^3.4.17"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "npx tailwindcss -i ./public/stylesheet.css -o ./public/tailwind.css && electron ."
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="tailwind.css">
+    <title>List Users</title>
+</head>
+<style>
+</style>
+<body>
+    <h1>List of users and passwords</h1>
+
+    <div id="UserList">
+
+    </div>
+    <form id="back">
+        <button type="click">Back</button>
+    </form>
+    <script>
+        // creates UL and list items with the return content from the data
+        const list = document.getElementById('UserList'); // Target the parent container
+
+        // Create a new unordered list element and append it to the parent container
+        const createList = document.createElement("ul");
+        list.appendChild(createList);
+
+        // Listen for the 'send-list' event and dynamically add items
+        window.api.sendList((users) => {
+
+            // Validate data is an array
+            if (!Array.isArray(users)) {
+                console.error('Data is not an array:', users);
+                return;
+            }
+
+            // Target the container to display the user list
+            const listContainer = document.getElementById('UserList');
+            listContainer.innerHTML = ''; // Clear any existing content
+
+            // Create a new unordered list
+            const userList = document.createElement('ul');
+            listContainer.appendChild(userList);
+
+            // Iterate over the array and create list items
+            users.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Username: ${user.Username}, Password: ${user.Password}, Website: ${user.Website}`;
+                userList.appendChild(listItem);
+            });
+        });
+
+        document.getElementById('back').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.api.home();
+        });
+        
+    </script>
+</body>
+</html>

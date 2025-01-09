@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="tailwind.css">
+    <title>Home</title>
+</head>
+<body>
+    <h1>
+        Password Manager
+    </h1>
+    <form id="AddInfo">
+        <h2>Add New Info Here</h2>
+        <input type="text" id="Username" placeholder="Username . . ."/>
+        <input type="text" id="Password" placeholder="Password . . ."/>
+        <input type="text" id="website" placeholder="Website . . ."/>
+        <button id="submit" type="submit">Submit</button>
+    </form>
+    <div id="infoList">
+        <button id="list" type="click">List Users</button>
+    </div>
+    <div id="passwordGenerator">
+        <p id="passwordHolder"></p>
+        <button id="gen" type="click">Generate Password</button>
+    </div>
+    <script>
+        document.getElementById('AddInfo').addEventListener('submit', (e) => {
+            const username = document.getElementById('Username').value;
+            const Password = document.getElementById('Password').value;
+            const website = document.getElementById('website').value;
+
+            console.log(username, Password, website);
+
+            if (username && Password && website) {
+                const userInfo = [username, Password, website];
+                console.log(userInfo[0]);
+                
+                window.api.addNewInfo(userInfo);
+            } else {
+                window.alert("Error all fields not entered");
+            }
+        });
+
+        document.getElementById('list').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.alert('Listing Users');
+            window.api.listUsers();
+        });
+
+        document.getElementById('gen').addEventListener("click", (e) => {
+            e.preventDefault();
+            window.api.generatePassword();
+            window.api.sendPassword((password) => {
+                document.getElementById('passwordHolder').innerText = password;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="tailwind.css">
+    <title>Secure Electron Input</title>
+</head>
+<body class="flex flex-col min-h-screen min-w-screen">
+    <h1 class="bg-black text-white">Login</h1>
+    <form id="inputForm" class="bg-slate-800">
+        <input type="text" id="username" placeholder="Username" class="text-white"/>
+        <input type="text" id="pwd" placeholder="Password" class="text-white"/>
+        <button type="submit" class="text-white">Send</button>
+    </form>
+
+    <script>
+        // Use the secure API exposed by preload.js
+        document.getElementById('inputForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const pwd = document.getElementById('pwd').value;
+            const input = [username, pwd];
+            window.api.sendInput(input); // Send input to the main process
+        });
+
+        window.api.onReply((response) => {
+            alert(`Response: ${response}`);
+        });
+
+    </script>
+</body>
+</html>
