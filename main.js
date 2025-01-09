@@ -25,12 +25,28 @@ app.on('ready', () => {
 
 // Handle input from the renderer
 ipcMain.on('input-data', (event, input) => {
+    /** 
+     * Used for development to encrypt usernames and passwords
+     * I need to make real functions for it but this is what I am 
+     * using for development. 
+     */
+    // const username = "username";
+    // const password = "password";
+
+    // const cipherUsername = encryptor.AES.encrypt(username, process.env.rootKey);
+    // const cipherPassword = encryptor.AES.encrypt(password, process.env.rootKey);
+
+    // console.log(`Encrypted Username: ${cipherUsername}, Password: ${cipherPassword}`);
+
     // Add data encryption within transmission
     try {
         const root = FS.readFileSync(__dirname + rootPath);
         const rootJson = JSON.parse(root);
 
-        if (input[0] === rootJson.uN && input[1] === rootJson.pwd) {
+        // Need to figure out a way to properly encrypt and decrypt information using crpyto-js
+        const valid = (encryptor.AES.decrypt(rootJson.uN, process.env.rootKey).toString(encryptor.enc.Utf8) === input[0]) && (encryptor.AES.decrypt(rootJson.pwd, process.env.rootKey).toString(encryptor.enc.Utf8) === input[1]);
+
+        if (valid) {
             console.log('Verified!');
             onceVerified();
         } else {
