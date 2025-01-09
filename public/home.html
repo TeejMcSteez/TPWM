@@ -6,23 +6,23 @@
     <link rel="stylesheet" href="tailwind.css">
     <title>Home</title>
 </head>
-<body>
-    <h1>
+<body class="flex flex-col items-center place-items-center justify-center">
+    <h1 class="text-white bg-black  m-3 p-2">
         Password Manager
     </h1>
-    <form id="AddInfo">
-        <h2>Add New Info Here</h2>
-        <input type="text" id="Username" placeholder="Username . . ."/>
-        <input type="text" id="Password" placeholder="Password . . ."/>
-        <input type="text" id="website" placeholder="Website . . ."/>
-        <button id="submit" type="submit">Submit</button>
+    <h2 class="text-white bg-black  p-2 m-3">Add New Info Below</h2>
+    <form id="AddInfo" class="flex flex-row p-1 m-1">
+        <input type="text" class="bg-black  text-white p-px m-px" id="Username" placeholder="Username . . ."/>
+        <input type="text" class="bg-black  p-px m-px" id="Password" placeholder="Password . . ."/>
+        <input type="text" class="bg-black   p-px m-px" id="website" placeholder="Website . . ."/>
+        <button id="submit" class="bg-black  p-px m-px" type="submit">Submit</button>
     </form>
-    <div id="infoList">
+    <div id="infoList" class="flex flex-col bg-black text-white m-3 p-2 items-center justify-center place-items-center">
         <button id="list" type="click">List Users</button>
     </div>
-    <div id="passwordGenerator">
-        <p id="passwordHolder"></p>
-        <button id="gen" type="click">Generate Password</button>
+    <div id="passwordGenerator" class="flex flex-col">
+        <p id="passwordHolder" class="bg-black text-white m-3 p-3"></p>
+        <button id="gen" type="click" class="bg-black text-white m-3 p-3">Generate Password</button>
     </div>
     <script>
         document.getElementById('AddInfo').addEventListener('submit', (e) => {

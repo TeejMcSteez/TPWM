@@ -41,7 +41,7 @@ ipcMain.on('input-data', (event, input) => {
 
     // Add data encryption within transmission
     try {
-        const root = FS.readFileSync(__dirname + rootPath);
+        const root = FS.readFileSync(rootPath);
         const rootJson = JSON.parse(root);
 
         // Need to figure out a way to properly encrypt and decrypt information using crpyto-js
