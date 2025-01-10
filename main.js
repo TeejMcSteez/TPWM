@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
-const FS = require('fs');
+const FS = require('node:fs');
 const path = require('node:path');
-const enc = require('crypto');
+const enc = require('node:crypto');
 const pass = require('generate-password');
 const encryptor = require('crypto-js')
 require('dotenv').config();
