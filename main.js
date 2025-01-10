@@ -1,3 +1,20 @@
+/**
+ * @todo Add a way to setup the file system properly and for node to decide whether or not that the system is 
+ * a windows or linux enviroment
+ * @todo See about file encryption/compression and obufscation within different OS file systems
+ * @todo Make look pretty with tailwind
+ * @todo Add a feature to import and export user data so one can download the app and import the data
+ * to use on the app to a new machine making it *syncable*
+ * 
+ * @link Documentation guidelines: https://jsdoc.app/
+ * @link Docs
+ * FS - https://nodejs.org/api/fs.html
+ * Path - https://nodejs.org/api/path.html
+ * Crypto - https://nodejs.org/api/crypto.html
+ * Generate-Password - https://www.npmjs.com/package/generate-password
+ * Crypto-js - https://www.npmjs.com/package/crypto-js
+ * Dotenv - https://www.npmjs.com/package/dotenv
+ */
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const FS = require('node:fs');
 const path = require('node:path');
@@ -24,10 +41,13 @@ app.on('ready', () => {
 
 });
 
-// Handle input from the renderer
+/**
+ * @description Handle input from the renderer
+ * @param {Array.input[username, password]}  
+ */
 ipcMain.on('input-data', (event, input) => {
     /** 
-     * Used for development to encrypt usernames and passwords
+     * @description Used for development to encrypt usernames and passwords
      * I need to make real functions for it but this is what I am 
      * using for development. 
      */
@@ -59,7 +79,11 @@ ipcMain.on('input-data', (event, input) => {
     }
 });
 const filePath = __dirname + "/users.json";
-
+/** 
+ * @description - Handles input from home file to add a new user information to the userfile
+ * @param event - Event triggered from renderer
+ * @param {Array.<UserInfo>[Username, Password, Website]} - Username, Password and Website
+ */
 ipcMain.handle('add-new-info', (event, userInfo) => {
     try {
         let data = [];
@@ -90,7 +114,10 @@ ipcMain.handle('add-new-info', (event, userInfo) => {
         return { status: 'error', message: err.message};
     }
 });
-
+/**
+ * @description List decrypted user information from user file
+ * @param {Event} - triggered by renderer
+ */
 ipcMain.on('list-users', (event) => {
     mainWindow.close();
     
@@ -120,7 +147,10 @@ ipcMain.on('list-users', (event) => {
 
     mainWindow.webContents.send('send-list', data);
 });
-
+/**
+ * @description When the user is authed successfully redirects to home page
+ * @param {Event} - event triggered by renderer
+ */
 ipcMain.on('home', (event) => {
     mainWindow.close();
 
@@ -135,14 +165,20 @@ ipcMain.on('home', (event) => {
 
     mainWindow.loadFile(path.join(__dirname, '/public/home.html'));
 });
-
+/**
+ * @description Generates random password for the user to use in the new login info
+ * @param {Event} - event triggered by renderer
+ */
 ipcMain.on('generatePassword', (event) => {
     // generating secure password here
     const password = pass.generate({length: 12, numbers: true, uppercase: true, symbols: true, strict: true});
 
     mainWindow.webContents.send('sendPassword', password);
 });
-
+/**
+ * @description Once verified redirects user to the home page
+ * @link icpMain.on('input-data', ...
+ */
 function onceVerified() {
     mainWindow.close();
 
