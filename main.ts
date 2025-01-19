@@ -22,12 +22,17 @@
  * rootKey = "pass"
  * keyPass = "pass"
  */
+/**
+ * Add keytar to the packages and setup a way to init the root user as well as setup the root file system 
+ * Also figure out exactly what keytar can do and how it works. 
+ */
 const { app, BrowserWindow, ipcMain } = require('electron');
 const FS = require('node:fs');
 const path = require('node:path');
 const enc = require('node:crypto');
 const pass = require('generate-password');
 const encryptor = require('crypto-js')
+const kt = require('keytar');
 require('dotenv').config();
 
 let mainWindow;
@@ -37,7 +42,7 @@ const rootPath = process.env.rootPath;
 // /**
 //  * @description Type Definitions
 //  */
-type EncryptedUserInfo = {
+interface EncryptedUserInfo  {
     Username: string;
     Password: string;
     Website: string;
@@ -102,7 +107,7 @@ const filePath = __dirname + "/users.json";
  */
 ipcMain.handle('add-new-info', (event, userInfo) => {
     try {
-        let data = [];
+        let data: EncryptedUserInfo[] = [];
         const exists = FS.existsSync(filePath);
         if (!exists) {
             FS.appendFileSync(filePath, '');

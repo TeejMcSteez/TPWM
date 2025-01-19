@@ -7,6 +7,7 @@
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
     "generate-password": "^1.7.1",
+    "keytar": "^7.9.0",
     "typescript": "^5.7.3"
   },
   "name": "tpwm",
@@ -18,7 +19,7 @@
   },
   "scripts": {
     "start": "npx tsc main.ts preload.ts --target es5 --pretty --removeComments --allowJs && tailwindcss -i ./public/stylesheet.css -o ./public/tailwind.css && electron .",
-    "setup": "npm i crypto-js dotenv electron generate-password typescript @types/node",
+    "setup": "npm i crypto-js dotenv electron generate-password typescript @types/node keytar",
     "clean": "rm main.js && rm preload.js"
   },
   "repository": {
